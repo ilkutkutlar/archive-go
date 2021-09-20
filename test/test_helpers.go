@@ -18,6 +18,22 @@ func assertFileExists(t *testing.T, filePath string) {
   }
 }
 
+func assertFileDoesNotExist(t *testing.T, filePath string) {
+  _, err := os.Stat(filePath)
+
+  if err == nil || !errors.Is(err, fs.ErrNotExist) {
+    t.Fail()
+  }
+}
+
+func assertArchiveContentsEqual(t *testing.T, archivePath string, expectedArchiveFiles string) {
+  actual := getArchiveFiles(archivePath)
+
+  if actual != expectedArchiveFiles {
+    t.Fail()
+  }
+}
+
 func getArchiveFiles(archivePath string) string {
     command := exec.Command("tar", "-t", "-f", archivePath)
     out, _ := command.CombinedOutput()
