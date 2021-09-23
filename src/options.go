@@ -4,7 +4,7 @@ import flag "github.com/spf13/pflag"
 
 var (
   flagAdd = flag.StringP("add", "a", "", "Add file to archive of current directory")
-  flagGzipped = flag.StringP("add-gzipped", "z", "", "Add a gzipped version of file to archive. Original file is not affected unless -d is passed")
+  flagAddGzipped = flag.StringP("add-gzipped", "z", "", "Add a gzipped version of file to archive. Original file is not affected unless -d is passed")
   flagUnarchive = flag.StringP("unarchive", "u", "", "Unarchive file from archive of current directory")
   flagDelete= flag.BoolP("delete", "d", false, "Pass flag to -a, -u or -z to delete file in dir/archive after operation")
   flagList = flag.BoolP("list", "l", false, "List the files in current directory archive")
@@ -13,24 +13,53 @@ var (
   flagVersion = flag.BoolP("version", "v", false, "Print version and exit")
 )
 
+const ARCHIVE_NAME = ".archive.tar"
+
 func ParseOptions() {
-  const ARCHIVE_NAME = ".archive.tar"
   flag.CommandLine.SortFlags = false
   flag.Parse()
 
   if *flagAdd != "" {
-    AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
-  } else if *flagGzipped != "" {
-    AddToArchiveGzipped(*flagGzipped, ARCHIVE_NAME, *flagDelete)
+    execOptionAdd()
+  } else if *flagAddGzipped != "" {
+    execOptionAddGzipped()
   } else if *flagUnarchive != "" {
-    Unarchive(*flagUnarchive, ARCHIVE_NAME, *flagDelete)
+    execOptionUnarchive()
   } else if *flagList {
-    ListArchive(ARCHIVE_NAME)
+    execOptionList()
   } else if *flagTopLevel {
-    ListArchiveTopLevel(ARCHIVE_NAME)
+    execOptionTopLevel()
   } else if *flagHelp {
-    printHelp()
+    execOptionHelp()
   } else if *flagVersion {
-    printVersion()
+    execOptionVersion()
   }
+}
+
+func execOptionAdd() {
+  AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
+}
+
+func execOptionAddGzipped() {
+  AddToArchiveGzipped(*flagAddGzipped, ARCHIVE_NAME, *flagDelete)
+}
+
+func execOptionUnarchive() {
+  Unarchive(*flagUnarchive, ARCHIVE_NAME, *flagDelete)
+}
+
+func execOptionList() {
+  ListArchive(ARCHIVE_NAME)
+}
+
+func execOptionTopLevel() {
+  ListArchiveTopLevel(ARCHIVE_NAME)
+}
+
+func execOptionHelp() {
+  printHelp()
+}
+
+func execOptionVersion() {
+  printVersion()
 }
