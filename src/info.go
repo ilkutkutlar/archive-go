@@ -54,5 +54,7 @@ func filterTopLevelFiles(allFilePaths []string) []string {
 }
 
 func isTopLevel(filePath string) bool {
-  return path.Dir(filePath) == path.Base(filePath)
+  isTopLevelDir := path.Dir(filePath) == path.Base(filePath)
+  isTopLevelFile := path.Dir(filePath) == "."
+  return isTopLevelDir || isTopLevelFile
 }
