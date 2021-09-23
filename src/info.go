@@ -5,40 +5,39 @@ import (
   "os/exec"
   "strings"
   "path"
+  "errors"
 )
 
-func ListArchive(archiveName string) {
-  if FileExists(archiveName) {
-    command := exec.Command("tar", "-t", "-f", archiveName)
-    out, err := command.CombinedOutput()
+func ListArchive(archiveName string) (string, error) {
+  if !FileExists(archiveName) {
+    return "", errors.New("No archive file in current directory")
+  }
 
-    if err == nil {
-      fmt.Println("Files in archive:")
-      fmt.Println(string(out))
-    } else {
-      fmt.Println("An error occurred")
-    }
+  command := exec.Command("tar", "-t", "-f", archiveName)
+  out, err := command.CombinedOutput()
+
+  if err == nil {
+    return fmt.Sprint(string(out)), nil
   } else {
-    fmt.Println("No archive file in current directory")
+    return "", errors.New("An error occurred")
   }
 }
 
-func ListArchiveTopLevel(archiveName string) {
-  if FileExists(archiveName) {
-    command := exec.Command("tar", "-t", "-f", archiveName)
-    out, err := command.CombinedOutput()
+func ListArchiveTopLevel(archiveName string) (string, error) {
+  if !FileExists(archiveName) {
+    return "", errors.New("No archive file in current directory")
+  }
 
-    if err == nil {
-      fmt.Println("Top-level files in archive:")
-    } else {
-      fmt.Println("An error occurred:")
-    }
+  command := exec.Command("tar", "-t", "-f", archiveName)
+  out, err := command.CombinedOutput()
 
+  if err == nil {
     allFilePaths := strings.Split(string(out), "\n")
     topLevelFiles := filterTopLevelFiles(allFilePaths)
-    fmt.Println(strings.Join(topLevelFiles, "\n"))
+    return strings.Join(topLevelFiles, "\n"), nil
   } else {
-    fmt.Println("No archive file in current directory")
+    errMsg := fmt.Sprint("An error occurred:", string(out))
+    return "", errors.New(errMsg)
   }
 }
 

@@ -1,6 +1,10 @@
 package archive
 
-import flag "github.com/spf13/pflag"
+import (
+	"fmt"
+
+	flag "github.com/spf13/pflag"
+)
 
 var (
   flagAdd = flag.StringP("add", "a", "", "Add file to archive of current directory")
@@ -37,23 +41,58 @@ func ParseOptions() {
 }
 
 func execOptionAdd() {
-  AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
+  err := AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
+  if err == nil {
+    fmt.Println(*flagAdd, "added to archive")
+  } else {
+    fmt.Print(err)
+  }
 }
 
 func execOptionAddGzipped() {
-  AddToArchiveGzipped(*flagAddGzipped, ARCHIVE_NAME, *flagDelete)
+  gzippedFileName, err := AddToArchiveGzipped(*flagAddGzipped, ARCHIVE_NAME, *flagDelete)
+
+  if err == nil {
+    fmt.Println(*flagAddGzipped, "added to archive as a gzipped file named", gzippedFileName)
+  } else {
+    fmt.Print(err)
+  }
 }
 
 func execOptionUnarchive() {
-  Unarchive(*flagUnarchive, ARCHIVE_NAME, *flagDelete)
+  err := Unarchive(*flagUnarchive, ARCHIVE_NAME, *flagDelete)
+
+  if err == nil {
+    fmt.Println("Retrieved", *flagUnarchive, "from archive")
+
+    if *flagDelete {
+      fmt.Println("Deleted", *flagUnarchive, "from archive permanently")
+    }
+  } else {
+    fmt.Print(err)
+  }
 }
 
 func execOptionList() {
-  ListArchive(ARCHIVE_NAME)
+  out, err := ListArchive(ARCHIVE_NAME)
+
+  if err == nil {
+    fmt.Println("Files in archive:")
+    fmt.Print(out)
+  } else {
+    fmt.Println(err)
+  }
 }
 
 func execOptionTopLevel() {
-  ListArchiveTopLevel(ARCHIVE_NAME)
+  out, err := ListArchiveTopLevel(ARCHIVE_NAME)
+
+  if err == nil {
+    fmt.Println("Top-level files in archive:")
+    fmt.Print(out)
+  } else {
+    fmt.Println(err)
+  }
 }
 
 func execOptionHelp() {

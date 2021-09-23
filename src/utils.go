@@ -19,7 +19,7 @@ func IsFile(filePath string) bool {
   return info.Mode().IsRegular()
 }
 
-func GzipFileOrDir(filePath string, removeFiles bool) string {
+func GzipFileOrDir(filePath string, removeFiles bool) (string, error) {
   if IsFile(filePath) {
     return GzipFile(filePath, removeFiles)
   } else {
@@ -27,7 +27,7 @@ func GzipFileOrDir(filePath string, removeFiles bool) string {
   }
 }
 
-func GzipFile(filePath string, removeFiles bool) string {
+func GzipFile(filePath string, removeFiles bool) (string, error) {
   fileName := path.Base(filePath)
   gzippedPath := fmt.Sprintf("%s.gz", filePath)
 
@@ -43,17 +43,17 @@ func GzipFile(filePath string, removeFiles bool) string {
   out, err := command.CombinedOutput()
 
   if err == nil || GzipTest(gzippedPath) {
-    return fmt.Sprintf("%s.gz", fileName)
+    return fmt.Sprintf("%s.gz", fileName), nil
   } else {
-    fmt.Println("Gzip failed:")
-    fmt.Println(string(out))
-    fmt.Println(err.Error())
-    // TODO: proper error handling
-    return ""
+    errMsg := fmt.Sprint(
+      "Gzip failed:", "\n",
+      string(out), "\n",
+      err)
+    return "", errors.New(errMsg)
   }
 }
 
-func GzipDir(filePath string, removeFiles bool) string {
+func GzipDir(filePath string, removeFiles bool) (string, error) {
   fileName := path.Base(filePath)
   fileDir := path.Dir(filePath)
   gzippedPath := fmt.Sprintf("%s.tar.gz", filePath)
@@ -71,13 +71,13 @@ func GzipDir(filePath string, removeFiles bool) string {
   out, err := command.CombinedOutput()
 
   if err == nil || GzipTest(gzippedPath) {
-    return fmt.Sprintf("%s.tar.gz", fileName)
+    return fmt.Sprintf("%s.tar.gz", fileName), nil
   } else {
-    fmt.Println("Gzip failed:")
-    fmt.Println(string(out))
-    fmt.Println(err.Error())
-    // TODO: proper error handling
-    return ""
+    errMsg := fmt.Sprint(
+      "Gzip failed:", "\n",
+      string(out), "\n",
+      err)
+    return "", errors.New(errMsg)
   }
 }
 
@@ -86,7 +86,7 @@ func GzipTest(gzippedPath string) bool {
   return gzipTestErr == nil
 }
 
-func DestroyFileInArchive(filePath string, archivePath string) bool {
+func DestroyFileInArchive(filePath string, archivePath string) error {
   archiveDir := path.Dir(archivePath)
 
   command := exec.Command("tar", "-C", archiveDir, "-f", archivePath, "--delete", filePath)
@@ -94,13 +94,12 @@ func DestroyFileInArchive(filePath string, archivePath string) bool {
   out, err := command.CombinedOutput()
 
   if err == nil {
-    fmt.Println("Deleted", filePath, "from archive permanently")
-    return true
+    return nil
   } else {
-    fmt.Println("Deleting from archive failed:")
-    fmt.Println(string(out))
-    fmt.Println(err.Error())
-    // TODO: proper error handling
-    return false
+    errMsg := fmt.Sprint(
+      "Deleting from archive failed:", "\n",
+      string(out), "\n",
+      err)
+    return errors.New(errMsg)
   }
 }
