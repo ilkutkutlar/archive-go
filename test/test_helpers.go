@@ -10,6 +10,12 @@ import (
   "testing"
 )
 
+const TEST_ARCHIVE = "test_archive.tar"
+
+func cleanup() {
+  os.Remove(TEST_ARCHIVE)
+}
+
 func assertFileExists(t *testing.T, filePath string) {
   _, err := os.Stat(filePath)
 
