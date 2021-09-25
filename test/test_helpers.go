@@ -12,6 +12,8 @@ import (
 )
 
 const TEST_ARCHIVE = "test_archive.tar"
+const DUMMY_ARCHIVE_1 = "fixtures/dummy_archive.tar"
+const DUMMY_ARCHIVE_2 = "fixtures/dummy_archive2.tar"
 
 func cleanup() {
   os.Remove(TEST_ARCHIVE)
@@ -43,6 +45,12 @@ func assertArchiveContentsEqual(t *testing.T, archivePath string, expectedArchiv
   actual := getArchiveFiles(archivePath)
 
   if actual != expectedArchiveFiles {
+    t.Fail()
+  }
+}
+
+func assertNil(t *testing.T, object interface{}) {
+  if object != nil {
     t.Fail()
   }
 }
