@@ -13,9 +13,13 @@ func TestAddToArchiveGzipped(t *testing.T) {
   t.Cleanup(cleanup)
 
   tempDir := t.TempDir()
-  testFile1 := createTestFile(tempDir, 1)
-  testDir1 := createTestDir(tempDir, 1)
-  createTestFile(testDir1, 2)
+  testFile1 := path.Join(tempDir, "test1.txt")
+  testDir1 := path.Join(tempDir, "test_dir1")
+  testFile2 := path.Join(testDir1, "test2.txt")
+
+  os.Create(testFile1)
+  os.Mkdir(testDir1, 0755)
+  os.Create(testFile2)
 
   archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, false)
   archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, false)
@@ -37,9 +41,13 @@ func TestAddToArchiveGzippedAndRemove(t *testing.T) {
   t.Cleanup(cleanup)
 
   tempDir := t.TempDir()
-  testFile1 := createTestFile(tempDir, 1)
-  testDir1 := createTestDir(tempDir, 1)
-  testFile2 := createTestFile(testDir1, 2)
+  testFile1 := path.Join(tempDir, "test1.txt")
+  testDir1 := path.Join(tempDir, "test_dir1")
+  testFile2 := path.Join(testDir1, "test2.txt")
+
+  os.Create(testFile1)
+  os.Mkdir(testDir1, 0755)
+  os.Create(testFile2)
 
   archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, true)
   archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, true)
@@ -62,7 +70,9 @@ func TestErrorHandledCorrectlyDuringArchivingGzipped(t *testing.T) {
   t.Cleanup(cleanup)
 
   tempDir := t.TempDir()
-  testFile1 := createTestFile(tempDir, 1)
+  testFile1 := path.Join(tempDir, "test1.txt")
+  os.Create(testFile1)
+
   // Remove read permission so adding to archive causes error
   os.Chmod(testFile1, 200)
 

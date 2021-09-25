@@ -2,7 +2,6 @@ package archive
 
 import (
   "os"
-  "fmt"
   "os/exec"
   "errors"
   "io/fs"
@@ -61,17 +60,17 @@ func getArchiveFiles(archivePath string) string {
     return strings.TrimSpace(string(out))
 }
 
-func createTestFile(dir string, number int) string {
-  testFile := fmt.Sprintf("%s/test%d.txt", dir , number)
-  os.Create(testFile)
-  return testFile
-}
+//func createTestFile(dir string, number int) string {
+  //testFile := fmt.Sprintf("%s/test%d.txt", dir , number)
+  //os.Create(testFile)
+  //return testFile
+//}
 
-func createTestDir(dir string, number int) string {
-  testDir:= fmt.Sprintf("%s/test_dir%d.txt", dir , number)
-  os.Mkdir(testDir, 0755)
-  return testDir
-}
+//func createTestDir(dir string, number int) string {
+  //testDir:= fmt.Sprintf("%s/test_dir%d.txt", dir , number)
+  //os.Mkdir(testDir, 0755)
+  //return testDir
+//}
 
 func copyFile(srcPath string, destPath string) error {
     in, err := os.Open(srcPath)
