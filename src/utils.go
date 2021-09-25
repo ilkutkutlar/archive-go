@@ -36,8 +36,8 @@ func GzipFile(filePath string, removeFiles bool) (string, error) {
   if removeFiles {
     command = exec.Command("gzip", filePath)
   } else {
-    // -k to keep the original file.
-    command = exec.Command("gzip", "-k", filePath)
+    // keep the original file.
+    command = exec.Command("gzip", "--keep", filePath)
   }
 
   out, err := command.CombinedOutput()
@@ -58,16 +58,20 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
   fileDir := path.Dir(filePath)
   gzippedPath := fmt.Sprintf("%s.tar.gz", filePath)
 
-  var command *exec.Cmd
+  /* Use file_path instead of fileName here, so that it creates
+   * the archive in the same directory as the file. */
+  args := []string{
+     "--directory", fileDir,
+     "--file", gzippedPath,
+     "--create",
+     "--gzip",
+     fileName}
 
   if removeFiles {
-    command = exec.Command("tar", "-C", fileDir, "-czf", gzippedPath, fileName, "--remove-files")
-  } else {
-    /* Use file_path instead of file_name here, so that it creates
-     * the archive in the same directory as the file. */
-    command = exec.Command("tar", "-C", fileDir, "-czf", gzippedPath, fileName)
+    args = append(args, "--remove-files")
   }
 
+  command := exec.Command("tar", args...)
   out, err := command.CombinedOutput()
 
   if err == nil || GzipTest(gzippedPath) {
@@ -82,14 +86,17 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
 }
 
 func GzipTest(gzippedPath string) bool {
-  _, gzipTestErr := exec.Command("gzip", "-t", gzippedPath).Output()
+  _, gzipTestErr := exec.Command("gzip", "--test", gzippedPath).Output()
   return gzipTestErr == nil
 }
 
 func DestroyFileInArchive(filePath string, archivePath string) error {
   archiveDir := path.Dir(archivePath)
 
-  command := exec.Command("tar", "-C", archiveDir, "-f", archivePath, "--delete", filePath)
+  command := exec.Command("tar",
+    "--directory", archiveDir,
+    "--file", archivePath,
+    "--delete", filePath)
 
   out, err := command.CombinedOutput()
 
