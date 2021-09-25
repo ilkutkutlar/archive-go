@@ -2,7 +2,6 @@ package archive
 
 import (
   "fmt"
-  "os/exec"
   "strings"
   "path"
   "errors"
@@ -13,11 +12,10 @@ func ListArchive(archiveName string) (string, error) {
     return "", errors.New("No archive file in current directory")
   }
 
-  command := exec.Command("tar", "-t", "-f", archiveName)
-  out, err := command.CombinedOutput()
+  out, err := tarGetContents(archiveName)
 
   if err == nil {
-    return fmt.Sprint(string(out)), nil
+    return out, nil
   } else {
     return "", errors.New("An error occurred")
   }
@@ -28,15 +26,14 @@ func ListArchiveTopLevel(archiveName string) (string, error) {
     return "", errors.New("No archive file in current directory")
   }
 
-  command := exec.Command("tar", "-t", "-f", archiveName)
-  out, err := command.CombinedOutput()
+  out, err := tarGetContents(archiveName)
 
   if err == nil {
-    allFilePaths := strings.Split(string(out), "\n")
+    allFilePaths := strings.Split(out, "\n")
     topLevelFiles := filterTopLevelFiles(allFilePaths)
     return strings.Join(topLevelFiles, "\n"), nil
   } else {
-    errMsg := fmt.Sprint("An error occurred:", string(out))
+    errMsg := fmt.Sprint("An error occurred:", out)
     return "", errors.New(errMsg)
   }
 }
