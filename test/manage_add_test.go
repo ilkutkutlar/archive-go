@@ -116,7 +116,6 @@ func TestErrorHandledCorrectlyDuringArchiving(t *testing.T) {
   expectedErr := `Adding to archive failed:
 tar: test1.txt: Cannot open: Permission denied
 tar: Exiting with failure status due to previous errors
-
 exit status 2`
 
   assertStringEqual(t, expectedErr, actualErr.Error())

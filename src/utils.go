@@ -47,8 +47,7 @@ func GzipFile(filePath string, removeFiles bool) (string, error) {
   } else {
     errMsg := fmt.Sprint(
       "Gzip failed:", "\n",
-      string(out), "\n",
-      err)
+      string(out), err)
     return "", errors.New(errMsg)
   }
 }
@@ -79,8 +78,7 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
   } else {
     errMsg := fmt.Sprint(
       "Gzip failed:", "\n",
-      string(out), "\n",
-      err)
+      string(out), err)
     return "", errors.New(errMsg)
   }
 }
@@ -100,13 +98,12 @@ func DestroyFileInArchive(filePath string, archivePath string) error {
 
   out, err := command.CombinedOutput()
 
-  if err == nil {
-    return nil
-  } else {
+  if err != nil {
     errMsg := fmt.Sprint(
       "Deleting from archive failed:", "\n",
-      string(out), "\n",
-      err)
+      string(out), err)
     return errors.New(errMsg)
   }
+
+  return nil
 }

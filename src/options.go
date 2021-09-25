@@ -2,7 +2,6 @@ package archive
 
 import (
 	"fmt"
-
 	flag "github.com/spf13/pflag"
 )
 

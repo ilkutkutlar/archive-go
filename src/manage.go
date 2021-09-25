@@ -13,15 +13,14 @@ func AddToArchive(filePath string, archiveName string, removeFiles bool) error {
 
   out, err := tarAddToArchive(filePath, archiveName, removeFiles)
 
-  if err == nil {
-    return nil
-  } else {
+  if err != nil {
     errMsg := fmt.Sprint(
       "Adding to archive failed:", "\n",
-      out, "\n",
-      err)
+      out, err)
     return errors.New(errMsg)
   }
+
+  return nil
 }
 
 func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) (string, error) {
@@ -42,15 +41,14 @@ func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) 
    * There is no option in gzip to remove the original file when gzipping. */
    out, err := tarAddToArchive(gzippedFilePath, archiveName, true)
 
-   if err == nil {
-     return gzippedFileName, nil
-   } else {
+   if err != nil {
      errMsg := fmt.Sprint(
        "Adding to archive failed:", "\n",
-       out, "\n",
-       err)
+       out, err)
      return "", errors.New(errMsg)
    }
+
+   return gzippedFileName, nil
 }
 
 func Unarchive(filePath string, archiveName string, removeFiles bool) error {
@@ -62,8 +60,7 @@ func Unarchive(filePath string, archiveName string, removeFiles bool) error {
   if err != nil || !isFileRetrieved {
     errMsg := fmt.Sprint(
       "Retrieving from archive failed:", "\n",
-      out, "\n",
-      err.Error())
+      out, err)
     return errors.New(errMsg)
   }
 

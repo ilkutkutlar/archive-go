@@ -14,11 +14,11 @@ func ListArchive(archiveName string) (string, error) {
 
   out, err := tarGetContents(archiveName)
 
-  if err == nil {
-    return out, nil
-  } else {
+  if err != nil {
     return "", errors.New("An error occurred")
   }
+
+  return out, nil
 }
 
 func ListArchiveTopLevel(archiveName string) (string, error) {
@@ -28,14 +28,14 @@ func ListArchiveTopLevel(archiveName string) (string, error) {
 
   out, err := tarGetContents(archiveName)
 
-  if err == nil {
-    allFilePaths := strings.Split(out, "\n")
-    topLevelFiles := filterTopLevelFiles(allFilePaths)
-    return strings.Join(topLevelFiles, "\n"), nil
-  } else {
+  if err != nil {
     errMsg := fmt.Sprint("An error occurred:", out)
     return "", errors.New(errMsg)
   }
+
+  allFilePaths := strings.Split(out, "\n")
+  topLevelFiles := filterTopLevelFiles(allFilePaths)
+  return strings.Join(topLevelFiles, "\n"), nil
 }
 
 func filterTopLevelFiles(allFilePaths []string) []string {

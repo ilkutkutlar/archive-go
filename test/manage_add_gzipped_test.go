@@ -71,7 +71,6 @@ func TestErrorHandledCorrectlyDuringArchivingGzipped(t *testing.T) {
    * will show the full path of the file, so it won't only say "test.txt" */
   expectedErr := fmt.Sprintf(`Gzip failed:
 gzip: %s: Permission denied
-
 exit status 1`, testFile1)
 
   assertStringEqual(t, gzippedName, "")
