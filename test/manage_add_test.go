@@ -103,3 +103,28 @@ func TestAddToArchiveFilesWithSpacesAndRemove(t *testing.T) {
   assertFileDoesNotExist(t, testFile1)
   assertFileDoesNotExist(t, testDir1)
 }
+
+func TestErrorHandledCorrectlyDuringArchiving(t *testing.T) {
+  t.Cleanup(cleanup)
+
+  tempDir := t.TempDir()
+  testFile1 := createTestFile(tempDir, 1)
+  // Remove read permission so adding to archive causes error
+  os.Chmod(testFile1, 200)
+
+  actualErr := archive.AddToArchive(testFile1, TEST_ARCHIVE, false)
+  expectedErr := `Adding to archive failed:
+tar: test1.txt: Cannot open: Permission denied
+tar: Exiting with failure status due to previous errors
+
+exit status 2`
+
+  assertStringEqual(t, expectedErr, actualErr.Error())
+  assertFileExists(t, testFile1)
+  // Archiving failed - so we expect archive to be empty - i.e. non-existent
+  // TODO: although even an empty archive should not have been created!
+  assertArchiveContentsEqual(t, TEST_ARCHIVE, "")
+
+  // TODO: put this in cleanup
+  os.Remove(testFile1)
+}

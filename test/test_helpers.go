@@ -8,12 +8,19 @@ import (
   "io/fs"
   "strings"
   "testing"
+  "io"
 )
 
 const TEST_ARCHIVE = "test_archive.tar"
 
 func cleanup() {
   os.Remove(TEST_ARCHIVE)
+}
+
+func assertStringEqual(t *testing.T, expected string, actual string) {
+  if expected != actual {
+    t.Errorf("Expected: '%s'\nActual: '%s'", expected, actual)
+  }
 }
 
 func assertFileExists(t *testing.T, filePath string) {
@@ -56,4 +63,28 @@ func createTestDir(dir string, number int) string {
   testDir:= fmt.Sprintf("%s/test_dir%d.txt", dir , number)
   os.Mkdir(testDir, 0755)
   return testDir
+}
+
+func copyFile(srcPath string, destPath string) error {
+    in, err := os.Open(srcPath)
+    if err != nil {
+        return err
+    }
+
+    out, err := os.Create(destPath)
+    if err != nil {
+        return err
+    }
+
+    _, err = io.Copy(out, in)
+    if err != nil {
+        return err
+    }
+
+    err = in.Close()
+    if err != nil {
+      return err
+    }
+
+    return out.Close()
 }

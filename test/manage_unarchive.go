@@ -4,10 +4,6 @@ import (
   "testing"
 )
 
-func TestErrorHandledCorrectlyDuringArchiving(t *testing.T) {
-  t.SkipNow()
-}
-
 func TestUnarchiveFilesFromArchive(t *testing.T) {
   t.SkipNow()
 }

@@ -4,6 +4,8 @@ import (
   "testing"
   "path"
   "strings"
+  "os"
+  "fmt"
   archive "example.com/archive/src"
 )
 
@@ -57,5 +59,32 @@ func TestAddToArchiveGzippedAndRemove(t *testing.T) {
 }
 
 func TestErrorHandledCorrectlyDuringArchivingGzipped(t *testing.T) {
-  t.SkipNow()
+  t.Cleanup(cleanup)
+
+  tempDir := t.TempDir()
+  testFile1 := createTestFile(tempDir, 1)
+  // Remove read permission so adding to archive causes error
+  os.Chmod(testFile1, 200)
+
+  gzippedName, actualErr := archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, false)
+  /* Unlike with tar, since we are not using the -C option, gzip
+   * will show the full path of the file, so it won't only say "test.txt" */
+  expectedErr := fmt.Sprintf(`Gzip failed:
+gzip: %s: Permission denied
+
+exit status 1`, testFile1)
+
+  assertStringEqual(t, gzippedName, "")
+  assertStringEqual(t, expectedErr, actualErr.Error())
+
+  // TODO: Should be testing for archiving a directory as well.
+
+  assertFileExists(t, testFile1)
+  assertFileDoesNotExist(t, testFile1 + ".gz")
+
+  // Archiving failed - so we expect archive to be empty - i.e. non-existent
+  assertFileDoesNotExist(t, TEST_ARCHIVE)
+
+  // TODO: put this in cleanup
+  os.Remove(testFile1)
 }
