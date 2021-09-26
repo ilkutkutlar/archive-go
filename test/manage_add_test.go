@@ -1,7 +1,7 @@
 package archive
 
 import (
-	archive "example.com/archive/src"
+	archive "github.com/ilkutkutlar/archive-go/src"
 	"os"
 	"testing"
 )
