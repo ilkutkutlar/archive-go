@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-  archive.ParseOptions()
+	archive.ParseOptions()
 }

@@ -7,66 +7,66 @@ import (
 )
 
 func AddToArchive(filePath string, archiveName string, removeFiles bool) error {
-  if !FileExists(filePath) {
-    return errors.New(fmt.Sprint("No such file:", filePath))
-  }
+	if !FileExists(filePath) {
+		return errors.New(fmt.Sprint("No such file:", filePath))
+	}
 
-  out, err := tarAddToArchive(filePath, archiveName, removeFiles)
+	out, err := tarAddToArchive(filePath, archiveName, removeFiles)
 
-  if err != nil {
-    errMsg := fmt.Sprint(
-      "Adding to archive failed:", "\n",
-      out, err)
-    return errors.New(errMsg)
-  }
+	if err != nil {
+		errMsg := fmt.Sprint(
+			"Adding to archive failed:", "\n",
+			out, err)
+		return errors.New(errMsg)
+	}
 
-  return nil
+	return nil
 }
 
 func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) (string, error) {
-  fileDir := path.Dir(filePath)
+	fileDir := path.Dir(filePath)
 
-  if !FileExists(filePath) {
-    return "", errors.New(fmt.Sprint("No such file:", filePath))
-  }
+	if !FileExists(filePath) {
+		return "", errors.New(fmt.Sprint("No such file:", filePath))
+	}
 
-  gzippedFileName, err := GzipFileOrDir(filePath, removeFiles)
-  gzippedFilePath := path.Join(fileDir, gzippedFileName)
+	gzippedFileName, err := GzipFileOrDir(filePath, removeFiles)
+	gzippedFilePath := path.Join(fileDir, gzippedFileName)
 
-  if err != nil {
-    return "", err
-  }
+	if err != nil {
+		return "", err
+	}
 
-  /* Remove the gzipped file as it is only temporary.
-   * There is no option in gzip to remove the original file when gzipping. */
-   out, err := tarAddToArchive(gzippedFilePath, archiveName, true)
+	/* Remove the gzipped file as it is only temporary.
+	 * There is no option in gzip to remove the original file when gzipping. */
+	out, err := tarAddToArchive(gzippedFilePath, archiveName, true)
 
-   if err != nil {
-     errMsg := fmt.Sprint(
-       "Adding to archive failed:", "\n",
-       out, err)
-     return "", errors.New(errMsg)
-   }
+	if err != nil {
+		errMsg := fmt.Sprint(
+			"Adding to archive failed:", "\n",
+			out, err)
+		return "", errors.New(errMsg)
+	}
 
-   return gzippedFileName, nil
+	return gzippedFileName, nil
 }
 
 func Unarchive(filePath string, archiveName string, removeFiles bool) error {
-  archiveDir := path.Dir(archiveName)
+	archiveDir := path.Dir(archiveName)
 
-  out, err := tarUnarchive(filePath, archiveName)
+	out, err := tarUnarchive(filePath, archiveName)
 
-  isFileRetrieved := FileExists(fmt.Sprintf("%s/%s", archiveDir, filePath))
-  if err != nil || !isFileRetrieved {
-    errMsg := fmt.Sprint(
-      "Retrieving from archive failed:", "\n",
-      out, err)
-    return errors.New(errMsg)
-  }
+	isFileRetrieved := FileExists(fmt.Sprintf("%s/%s", archiveDir, filePath))
+	if err != nil || !isFileRetrieved {
+		errMsg := fmt.Sprint(
+			"Retrieving from archive failed:", "\n",
+			out, err)
+		return errors.New(errMsg)
+	}
 
-  if removeFiles {
-    return DestroyFileInArchive(filePath, archiveName)
-  }
+	if removeFiles {
+		return DestroyFileInArchive(filePath, archiveName)
+	}
 
-  return nil
+	return nil
 }

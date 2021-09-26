@@ -1,57 +1,57 @@
 package archive
 
 import (
-  "fmt"
-  "strings"
-  "path"
-  "errors"
+	"errors"
+	"fmt"
+	"path"
+	"strings"
 )
 
 func ListArchive(archiveName string) (string, error) {
-  if !FileExists(archiveName) {
-    return "", errors.New("No archive file in current directory")
-  }
+	if !FileExists(archiveName) {
+		return "", errors.New("No archive file in current directory")
+	}
 
-  out, err := tarGetContents(archiveName)
+	out, err := tarGetContents(archiveName)
 
-  if err != nil {
-    return "", errors.New("An error occurred")
-  }
+	if err != nil {
+		return "", errors.New("An error occurred")
+	}
 
-  return out, nil
+	return out, nil
 }
 
 func ListArchiveTopLevel(archiveName string) (string, error) {
-  if !FileExists(archiveName) {
-    return "", errors.New("No archive file in current directory")
-  }
+	if !FileExists(archiveName) {
+		return "", errors.New("No archive file in current directory")
+	}
 
-  out, err := tarGetContents(archiveName)
+	out, err := tarGetContents(archiveName)
 
-  if err != nil {
-    errMsg := fmt.Sprint("An error occurred:", out)
-    return "", errors.New(errMsg)
-  }
+	if err != nil {
+		errMsg := fmt.Sprint("An error occurred:", out)
+		return "", errors.New(errMsg)
+	}
 
-  allFilePaths := strings.Split(out, "\n")
-  topLevelFiles := filterTopLevelFiles(allFilePaths)
-  return strings.Join(topLevelFiles, "\n"), nil
+	allFilePaths := strings.Split(out, "\n")
+	topLevelFiles := filterTopLevelFiles(allFilePaths)
+	return strings.Join(topLevelFiles, "\n"), nil
 }
 
 func filterTopLevelFiles(allFilePaths []string) []string {
-  var topLevelFiles []string
+	var topLevelFiles []string
 
-  for _, filePath := range allFilePaths {
-    if isTopLevel(filePath) {
-      topLevelFiles = append(topLevelFiles, filePath)
-    }
-  }
+	for _, filePath := range allFilePaths {
+		if isTopLevel(filePath) {
+			topLevelFiles = append(topLevelFiles, filePath)
+		}
+	}
 
-  return topLevelFiles
+	return topLevelFiles
 }
 
 func isTopLevel(filePath string) bool {
-  isTopLevelDir := path.Dir(filePath) == path.Base(filePath)
-  isTopLevelFile := path.Dir(filePath) == "."
-  return isTopLevelDir || isTopLevelFile
+	isTopLevelDir := path.Dir(filePath) == path.Base(filePath)
+	isTopLevelFile := path.Dir(filePath) == "."
+	return isTopLevelDir || isTopLevelFile
 }
