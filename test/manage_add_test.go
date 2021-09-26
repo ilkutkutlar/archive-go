@@ -3,32 +3,19 @@ package archive
 import (
   "testing"
   "os"
-  "path"
-  "strings"
   archive "example.com/archive/src"
 )
 
 func TestAddToArchive(t *testing.T) {
   t.Cleanup(cleanup)
-
-  tempDir := t.TempDir()
-
-  testFile1 := path.Join(tempDir, "test1.txt")
-  testDir1 := path.Join(tempDir, "test_dir1")
-  testFile2 := path.Join(testDir1, "test2.txt")
-
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
+  createTestFiles(t)
 
   archive.AddToArchive(testFile1, TEST_ARCHIVE, false)
   archive.AddToArchive(testDir1, TEST_ARCHIVE, false)
 
-  expected := strings.Join([]string{
-    path.Base(testFile1),
-    path.Base(testDir1) + "/",
-    path.Base(testDir1) + "/" + path.Base(testFile2),
-  }, "\n")
+  expected := `test1.txt
+test_dir1/
+test_dir1/test2.txt`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
   assertFileExists(t, testFile1)
@@ -37,50 +24,30 @@ func TestAddToArchive(t *testing.T) {
 
 func TestAddToArchiveFilesWithSpaces(t *testing.T) {
   t.Cleanup(cleanup)
+  createTestFiles(t)
 
-  tempDir := t.TempDir()
-  testFile1 := tempDir + "/test file 1.txt"
-  testDir1 := tempDir + "/test dir"
-  testFile2 := testDir1 + "/test file 2.txt"
+  archive.AddToArchive(testFile3, TEST_ARCHIVE, false)
+  archive.AddToArchive(testDir2, TEST_ARCHIVE, false)
 
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
-
-  archive.AddToArchive(testFile1, TEST_ARCHIVE, false)
-  archive.AddToArchive(testDir1, TEST_ARCHIVE, false)
-
-  expected := strings.Join([]string{
-    path.Base(testFile1),
-    path.Base(testDir1) + "/",
-    path.Base(testDir1) + "/" + path.Base(testFile2),
-  }, "\n")
+  expected := `test file 1.txt
+test dir/
+test dir/test file 2.txt`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
-  assertFileExists(t, testFile1)
-  assertFileExists(t, testDir1)
+  assertFileExists(t, testFile3)
+  assertFileExists(t, testDir2)
 }
 
 func TestAddToArchiveAndRemove(t *testing.T) {
   t.Cleanup(cleanup)
-
-  tempDir := t.TempDir()
-  testFile1 := path.Join(tempDir, "test1.txt")
-  testDir1 := path.Join(tempDir, "test_dir1")
-  testFile2 := path.Join(testDir1, "test2.txt")
-
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
+  createTestFiles(t)
 
   archive.AddToArchive(testFile1, TEST_ARCHIVE, true)
   archive.AddToArchive(testDir1, TEST_ARCHIVE, true)
 
-  expected := strings.Join([]string{
-    path.Base(testFile1),
-    path.Base(testDir1) + "/",
-    path.Base(testDir1) + "/" + path.Base(testFile2),
-  }, "\n")
+  expected := `test1.txt
+test_dir1/
+test_dir1/test2.txt`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
   assertFileDoesNotExist(t, testFile1)
@@ -89,36 +56,24 @@ func TestAddToArchiveAndRemove(t *testing.T) {
 
 func TestAddToArchiveFilesWithSpacesAndRemove(t *testing.T) {
   t.Cleanup(cleanup)
+  createTestFiles(t)
 
-  tempDir := t.TempDir()
-  testFile1 := tempDir + "/test file 1.txt"
-  testDir1 := tempDir + "/test dir"
-  testFile2 := testDir1 + "/test file 2.txt"
+  archive.AddToArchive(testFile3, TEST_ARCHIVE, true)
+  archive.AddToArchive(testDir2, TEST_ARCHIVE, true)
 
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
-
-  archive.AddToArchive(testFile1, TEST_ARCHIVE, true)
-  archive.AddToArchive(testDir1, TEST_ARCHIVE, true)
-
-  expected := strings.Join([]string{
-    path.Base(testFile1),
-    path.Base(testDir1) + "/",
-    path.Base(testDir1) + "/" + path.Base(testFile2),
-  }, "\n")
+  expected := `test file 1.txt
+test dir/
+test dir/test file 2.txt`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
-  assertFileDoesNotExist(t, testFile1)
-  assertFileDoesNotExist(t, testDir1)
+  assertFileDoesNotExist(t, testFile3)
+  assertFileDoesNotExist(t, testDir2)
 }
 
 func TestErrorHandledCorrectlyDuringArchiving(t *testing.T) {
   t.Cleanup(cleanup)
+  createTestFiles(t)
 
-  tempDir := t.TempDir()
-  testFile1 := path.Join(tempDir, "test1.txt")
-  os.Create(testFile1)
   // Remove read permission so adding to archive causes error
   os.Chmod(testFile1, 200)
 
@@ -133,7 +88,4 @@ exit status 2`
   // Archiving failed - so we expect archive to be empty - i.e. non-existent
   // TODO: although even an empty archive should not have been created!
   assertArchiveContentsEqual(t, TEST_ARCHIVE, "")
-
-  // TODO: put this in cleanup
-  os.Remove(testFile1)
 }

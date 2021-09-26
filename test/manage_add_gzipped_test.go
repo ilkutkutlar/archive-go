@@ -2,8 +2,6 @@ package archive
 
 import (
   "testing"
-  "path"
-  "strings"
   "os"
   "fmt"
   archive "example.com/archive/src"
@@ -11,23 +9,13 @@ import (
 
 func TestAddToArchiveGzipped(t *testing.T) {
   t.Cleanup(cleanup)
-
-  tempDir := t.TempDir()
-  testFile1 := path.Join(tempDir, "test1.txt")
-  testDir1 := path.Join(tempDir, "test_dir1")
-  testFile2 := path.Join(testDir1, "test2.txt")
-
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
+  createTestFiles(t)
 
   archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, false)
   archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, false)
 
-  expected := strings.Join([]string{
-    path.Base(testFile1) + ".gz",
-    path.Base(testDir1) + ".tar.gz",
-  }, "\n")
+  expected := `test1.txt.gz
+test_dir1.tar.gz`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
   assertFileExists(t, testFile1)
@@ -39,23 +27,13 @@ func TestAddToArchiveGzipped(t *testing.T) {
 
 func TestAddToArchiveGzippedAndRemove(t *testing.T) {
   t.Cleanup(cleanup)
-
-  tempDir := t.TempDir()
-  testFile1 := path.Join(tempDir, "test1.txt")
-  testDir1 := path.Join(tempDir, "test_dir1")
-  testFile2 := path.Join(testDir1, "test2.txt")
-
-  os.Create(testFile1)
-  os.Mkdir(testDir1, 0755)
-  os.Create(testFile2)
+  createTestFiles(t)
 
   archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, true)
   archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, true)
 
-  expected := strings.Join([]string{
-    path.Base(testFile1) + ".gz",
-    path.Base(testDir1) + ".tar.gz",
-  }, "\n")
+  expected := `test1.txt.gz
+test_dir1.tar.gz`
 
   assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
   assertFileDoesNotExist(t, testFile1)
@@ -68,10 +46,7 @@ func TestAddToArchiveGzippedAndRemove(t *testing.T) {
 
 func TestErrorHandledCorrectlyDuringArchivingGzipped(t *testing.T) {
   t.Cleanup(cleanup)
-
-  tempDir := t.TempDir()
-  testFile1 := path.Join(tempDir, "test1.txt")
-  os.Create(testFile1)
+  createTestFiles(t)
 
   // Remove read permission so adding to archive causes error
   os.Chmod(testFile1, 200)
@@ -93,7 +68,4 @@ exit status 1`, testFile1)
 
   // Archiving failed - so we expect archive to be empty - i.e. non-existent
   assertFileDoesNotExist(t, TEST_ARCHIVE)
-
-  // TODO: put this in cleanup
-  os.Remove(testFile1)
 }

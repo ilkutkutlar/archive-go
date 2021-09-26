@@ -19,12 +19,12 @@ func TestUnarchiveFilesFromArchive(t *testing.T) {
   assertFileExists(t, path.Join(path.Dir(TEST_ARCHIVE), "test_dir", "test1.txt"))
   assertNil(t, err)
 
-  expectedContents := `test_dir/
+  expected := `test_dir/
 test_dir/test1.txt
 test_dir/test_subdir/
 test_dir/test_subdir/test2.txt
 test.txt`
-  assertArchiveContentsEqual(t, TEST_ARCHIVE, expectedContents)
+  assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
 }
 
 func TestUnarchiveFilesWithSpacesInNameFromArchive(t *testing.T) {
@@ -39,10 +39,10 @@ func TestUnarchiveFilesWithSpacesInNameFromArchive(t *testing.T) {
   assertFileExists(t, path.Join(path.Dir(TEST_ARCHIVE), "dir with spaces", "file with space.txt"))
   assertNil(t, err)
 
-  expectedContents := `test.txt
+  expected:= `test.txt
 dir with spaces/
 dir with spaces/file with spaces.txt`
-  assertArchiveContentsEqual(t, TEST_ARCHIVE, expectedContents)
+  assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
 }
 
 func TestUnarchiveFilesFromArchiveAndRemove(t *testing.T) {
@@ -58,8 +58,8 @@ func TestUnarchiveFilesFromArchiveAndRemove(t *testing.T) {
   assertFileExists(t, path.Join(path.Dir(TEST_ARCHIVE), "test_dir", "test1.txt"))
   assertNil(t, err)
 
-  expectedContents := "test.txt"
-  assertArchiveContentsEqual(t, TEST_ARCHIVE, expectedContents)
+  expected:= "test.txt"
+  assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
 }
 
 func TestUnarchiveFilesWithSpacesInNameFromArchiveAndRemove(t *testing.T) {
@@ -74,8 +74,8 @@ func TestUnarchiveFilesWithSpacesInNameFromArchiveAndRemove(t *testing.T) {
   assertFileExists(t, path.Join(path.Dir(TEST_ARCHIVE), "dir with spaces", "file with space.txt"))
   assertNil(t, err)
 
-  expectedContents := "test.txt"
-  assertArchiveContentsEqual(t, TEST_ARCHIVE, expectedContents)
+  expected:= "test.txt"
+  assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
 }
 
 func TestErrorHandledCorrectlyUnarchiving(t *testing.T) {
