@@ -19,7 +19,7 @@ func printVersion() {
 	versionText := fmt.Sprintf(
 		`v0.0.2 - September 2021
 
-Usage: %s {-a|-u|-z} file [-d]
+Usage: %s {-a|-u} FILE [-d|-z]
        %s {-h|-l|-t|-v}`,
 		programName,
 		programName)

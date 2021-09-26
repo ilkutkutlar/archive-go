@@ -10,7 +10,7 @@ Email clients and productivity software (e.g. to-do list or note taking applicat
 
 It is essentially a specialised interface to `tar`. Instead of the user having to worry about remembering and typing long tar commands, handling errors, keeping track of tar files, etc. this script abstracts away all that to make archiving as simple as archiving an email with the click of a button: `archive -a file.txt`.
 
-## Basic usage
+## Usage
 
 Each directory has its own archive file (called `.archive.tar`) that's created when first file is archived. That's where all archived files are stored. Add file to CWD's archive (without removing the file):
 
@@ -27,7 +27,7 @@ archive -a file.txt -d
 To archive a gzipped version of the file (gzip the file, add gzipped version to archive, remove the gzipped file but keep the original unchanged):
 
 ```sh
-archive -z file.txt
+archive -a file.txt -z
 ```
 
 Pass the `-d` flag to remove the original, un-gzipped file after adding the gzipped version to archive:
@@ -35,7 +35,7 @@ Pass the `-d` flag to remove the original, un-gzipped file after adding the gzip
 ```sh
 # Gzip the file to file.txt.gz, add file.txt.gz to archive,
 # then remove 'file.txt.gz' and remove 'file.txt' as well.
-archive -z file.txt -d
+archive -a file.txt -zd
 ```
 
 To unarchive a file (but still keep it in the archive):
@@ -62,7 +62,8 @@ archive -l
 -a, --add FILE          # Add file to archive of current directory
 -u, --unarchive FILE    # Unarchive file from archive of current directory
 -d, --delete            # Pass flag to -a, -u or -z to delete file in dir/archive after operation
--z, --add-gzipped FILE  # Add a gzipped version of file to archive. Original file is not affected unless -d is passed
+-z, --gzip              # Used with -a to gzip the file/dir before archiving it. Original file is 
+                        # not affected (i.e. not gzipped) but will be deleted if -d is passed.
 -l, --list              # List the files in current directory archive
 -t, --top-level         # List only top-level files and directories in current directory archive
 -v, --version           # Print version and exit
