@@ -1,8 +1,8 @@
 package archive
 
 import (
-	archive "github.com/ilkutkutlar/archive/src"
 	"fmt"
+	archive "github.com/ilkutkutlar/archive/src"
 	"os"
 	"testing"
 )

@@ -6,14 +6,14 @@ import (
 )
 
 var (
-	flagAdd        = flag.StringP("add", "a", "", "Add file to archive of current directory")
-	flagAddGzipped = flag.StringP("add-gzipped", "z", "", "Add a gzipped version of file to archive. Original file is not affected unless -d is passed")
-	flagUnarchive  = flag.StringP("unarchive", "u", "", "Unarchive file from archive of current directory")
-	flagDelete     = flag.BoolP("delete", "d", false, "Pass flag to -a, -u or -z to delete file in dir/archive after operation")
-	flagList       = flag.BoolP("list", "l", false, "List the files in current directory archive")
-	flagTopLevel   = flag.BoolP("top-level", "t", false, "List only top-level files and directories in current directory archive")
-	flagHelp       = flag.BoolP("help", "h", false, "Print this help and exit")
-	flagVersion    = flag.BoolP("version", "v", false, "Print version and exit")
+	flagAdd       = flag.StringP("add", "a", "", "Add file to archive of current directory")
+	flagUnarchive = flag.StringP("unarchive", "u", "", "Unarchive file from archive of current directory")
+	flagGzip      = flag.BoolP("gzip", "z", false, "Used with -a to gzip the file/dir before archiving it. Original file is not affected (i.e. not gzipped) but will be deleted if -d is passed.")
+	flagDelete    = flag.BoolP("delete", "d", false, "Pass flag to -a, -u or -z to delete file in dir/archive after operation")
+	flagList      = flag.BoolP("list", "l", false, "List the files in current directory archive")
+	flagTopLevel  = flag.BoolP("top-level", "t", false, "List only top-level files and directories in current directory archive")
+	flagHelp      = flag.BoolP("help", "h", false, "Print this help and exit")
+	flagVersion   = flag.BoolP("version", "v", false, "Print version and exit")
 )
 
 const ARCHIVE_NAME = ".archive.tar"
@@ -24,8 +24,6 @@ func ParseOptions() {
 
 	if *flagAdd != "" {
 		execOptionAdd()
-	} else if *flagAddGzipped != "" {
-		execOptionAddGzipped()
 	} else if *flagUnarchive != "" {
 		execOptionUnarchive()
 	} else if *flagList {
@@ -40,19 +38,28 @@ func ParseOptions() {
 }
 
 func execOptionAdd() {
-	err := AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
+	if *flagGzip {
+		execAdd()
+	} else {
+		execAddGzipped()
+	}
+}
+
+func execAdd() {
+	gzippedFileName, err := AddToArchiveGzipped(*flagAdd, ARCHIVE_NAME, *flagDelete)
+
 	if err == nil {
-		fmt.Println(*flagAdd, "added to archive")
+		fmt.Println(*flagAdd, "added to archive as a gzipped file with name", gzippedFileName)
 	} else {
 		fmt.Print(err)
 	}
 }
 
-func execOptionAddGzipped() {
-	gzippedFileName, err := AddToArchiveGzipped(*flagAddGzipped, ARCHIVE_NAME, *flagDelete)
+func execAddGzipped() {
+	err := AddToArchive(*flagAdd, ARCHIVE_NAME, *flagDelete)
 
 	if err == nil {
-		fmt.Println(*flagAddGzipped, "added to archive as a gzipped file named", gzippedFileName)
+		fmt.Println(*flagAdd, "added to archive")
 	} else {
 		fmt.Print(err)
 	}
