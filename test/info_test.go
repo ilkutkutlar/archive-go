@@ -14,9 +14,7 @@ test_dir/test_subdir/test2.txt
 test.txt
 `
 
-  if actual != expected {
-    t.Fail()
-  }
+  assertStringEqual(t, expected, actual)
 }
 
 func TestListFilesInArchiveWithSpacesInName(t *testing.T) {
@@ -26,9 +24,7 @@ dir with spaces/
 dir with spaces/file with spaces.txt
 `
 
-  if actual != expected {
-    t.Fail()
-  }
+  assertStringEqual(t, expected, actual)
 }
 
 
@@ -38,9 +34,7 @@ func TestListTopLevelFilesInArchive(t *testing.T) {
 test.txt
 `
 
-  if actual != expected {
-    t.Fail()
-  }
+  assertStringEqual(t, expected, actual)
 }
 
 
@@ -50,7 +44,5 @@ func TestListTopLevelFilesInArchiveWithSpacesInName(t *testing.T) {
 dir with spaces/
 `
 
-  if actual != expected {
-    t.Fail()
-  }
+  assertStringEqual(t, expected, actual)
 }
