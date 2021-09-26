@@ -30,6 +30,31 @@ func cleanup() {
 	os.Remove(TEST_ARCHIVE)
 }
 
+func createTestFiles(t *testing.T) {
+	// temp dir is removed after the unit test function
+	// returns, so no need to remove it in cleanup
+	tempDir := t.TempDir()
+
+	testDir1 = path.Join(tempDir, "test_dir1")
+	testFile1 = path.Join(tempDir, "test1.txt")
+	testFile2 = path.Join(testDir1, "test2.txt")
+
+	testDir2 = path.Join(tempDir, "test dir")
+	testFile3 = path.Join(tempDir, "test file 1.txt")
+	testFile4 = path.Join(testDir2, "test file 2.txt")
+
+	testFiles := []string{testFile1, testFile2, testFile3, testFile4}
+	testDirs := []string{testDir1, testDir2}
+
+	for _, testDir := range testDirs {
+		os.Mkdir(testDir, 0755)
+	}
+
+	for _, testFile := range testFiles {
+		os.Create(testFile)
+	}
+}
+
 func assertStringEqual(t *testing.T, expected string, actual string) {
 	if expected != actual {
 		t.Errorf("Expected: '%s'\nActual: '%s'", expected, actual)
@@ -63,29 +88,6 @@ func assertArchiveContentsEqual(t *testing.T, archivePath string, expectedArchiv
 func assertNil(t *testing.T, object interface{}) {
 	if object != nil {
 		t.Fail()
-	}
-}
-
-func createTestFiles(t *testing.T) {
-	tempDir := t.TempDir()
-
-	testDir1 = path.Join(tempDir, "test_dir1")
-	testFile1 = path.Join(tempDir, "test1.txt")
-	testFile2 = path.Join(testDir1, "test2.txt")
-
-	testDir2 = path.Join(tempDir, "test dir")
-	testFile3 = path.Join(tempDir, "test file 1.txt")
-	testFile4 = path.Join(testDir2, "test file 2.txt")
-
-	testFiles := []string{testFile1, testFile2, testFile3, testFile4}
-	testDirs := []string{testDir1, testDir2}
-
-	for _, testDir := range testDirs {
-		os.Mkdir(testDir, 0755)
-	}
-
-	for _, testFile := range testFiles {
-		os.Create(testFile)
 	}
 }
 

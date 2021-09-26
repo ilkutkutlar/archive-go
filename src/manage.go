@@ -2,21 +2,18 @@ package archive
 
 import (
 	"errors"
-	"fmt"
 	"path"
 )
 
 func AddToArchive(filePath string, archiveName string, removeFiles bool) error {
 	if !FileExists(filePath) {
-		return errors.New(fmt.Sprint("No such file:", filePath))
+		return errors.New("No such file: " + filePath)
 	}
 
 	out, err := tarAddToArchive(filePath, archiveName, removeFiles)
 
 	if err != nil {
-		errMsg := fmt.Sprint(
-			"Adding to archive failed:", "\n",
-			out, err)
+		errMsg := "Adding to archive failed:\n" + out + err.Error()
 		return errors.New(errMsg)
 	}
 
@@ -27,7 +24,7 @@ func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) 
 	fileDir := path.Dir(filePath)
 
 	if !FileExists(filePath) {
-		return "", errors.New(fmt.Sprint("No such file:", filePath))
+		return "", errors.New("No such file: " + filePath)
 	}
 
 	gzippedFileName, err := GzipFileOrDir(filePath, removeFiles)
@@ -42,9 +39,7 @@ func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) 
 	out, err := tarAddToArchive(gzippedFilePath, archiveName, true)
 
 	if err != nil {
-		errMsg := fmt.Sprint(
-			"Adding to archive failed:", "\n",
-			out, err)
+		errMsg := "Adding to archive failed:\n" + out + err.Error()
 		return "", errors.New(errMsg)
 	}
 
@@ -56,11 +51,9 @@ func Unarchive(filePath string, archiveName string, removeFiles bool) error {
 
 	out, err := tarUnarchive(filePath, archiveName)
 
-	isFileRetrieved := FileExists(fmt.Sprintf("%s/%s", archiveDir, filePath))
+	isFileRetrieved := FileExists(path.Join(archiveDir, filePath))
 	if err != nil || !isFileRetrieved {
-		errMsg := fmt.Sprint(
-			"Retrieving from archive failed:", "\n",
-			out, err)
+		errMsg := "Retrieving from archive failed:\n" + out + err.Error()
 		return errors.New(errMsg)
 	}
 

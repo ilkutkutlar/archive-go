@@ -2,7 +2,6 @@ package archive
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -19,6 +18,24 @@ func IsFile(filePath string) bool {
 	return info.Mode().IsRegular()
 }
 
+func DestroyFileInArchive(filePath string, archivePath string) error {
+	archiveDir := path.Dir(archivePath)
+
+	command := exec.Command("tar",
+		"--directory", archiveDir,
+		"--file", archivePath,
+		"--delete", filePath)
+
+	out, err := command.CombinedOutput()
+
+	if err != nil {
+		errMsg := "Deleting from archive failed:\n" + string(out) + err.Error()
+		return errors.New(errMsg)
+	}
+
+	return nil
+}
+
 func GzipFileOrDir(filePath string, removeFiles bool) (string, error) {
 	if IsFile(filePath) {
 		return GzipFile(filePath, removeFiles)
@@ -29,7 +46,7 @@ func GzipFileOrDir(filePath string, removeFiles bool) (string, error) {
 
 func GzipFile(filePath string, removeFiles bool) (string, error) {
 	fileName := path.Base(filePath)
-	gzippedPath := fmt.Sprintf("%s.gz", filePath)
+	gzippedPath := filePath + ".gz"
 
 	var command *exec.Cmd
 
@@ -43,11 +60,9 @@ func GzipFile(filePath string, removeFiles bool) (string, error) {
 	out, err := command.CombinedOutput()
 
 	if err == nil || GzipTest(gzippedPath) {
-		return fmt.Sprintf("%s.gz", fileName), nil
+		return fileName + ".gz", nil
 	} else {
-		errMsg := fmt.Sprint(
-			"Gzip failed:", "\n",
-			string(out), err)
+		errMsg := "Gzip failed:\n" + string(out) + err.Error()
 		return "", errors.New(errMsg)
 	}
 }
@@ -55,7 +70,7 @@ func GzipFile(filePath string, removeFiles bool) (string, error) {
 func GzipDir(filePath string, removeFiles bool) (string, error) {
 	fileName := path.Base(filePath)
 	fileDir := path.Dir(filePath)
-	gzippedPath := fmt.Sprintf("%s.tar.gz", filePath)
+	gzippedPath := filePath + ".tar.gz"
 
 	/* Use file_path instead of fileName here, so that it creates
 	 * the archive in the same directory as the file. */
@@ -74,11 +89,9 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
 	out, err := command.CombinedOutput()
 
 	if err == nil || GzipTest(gzippedPath) {
-		return fmt.Sprintf("%s.tar.gz", fileName), nil
+		return fileName + ".tar.gz", nil
 	} else {
-		errMsg := fmt.Sprint(
-			"Gzip failed:", "\n",
-			string(out), err)
+		errMsg := "Gzip failed:\n" + string(out) + err.Error()
 		return "", errors.New(errMsg)
 	}
 }
@@ -86,24 +99,4 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
 func GzipTest(gzippedPath string) bool {
 	_, gzipTestErr := exec.Command("gzip", "--test", gzippedPath).Output()
 	return gzipTestErr == nil
-}
-
-func DestroyFileInArchive(filePath string, archivePath string) error {
-	archiveDir := path.Dir(archivePath)
-
-	command := exec.Command("tar",
-		"--directory", archiveDir,
-		"--file", archivePath,
-		"--delete", filePath)
-
-	out, err := command.CombinedOutput()
-
-	if err != nil {
-		errMsg := fmt.Sprint(
-			"Deleting from archive failed:", "\n",
-			string(out), err)
-		return errors.New(errMsg)
-	}
-
-	return nil
 }

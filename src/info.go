@@ -2,7 +2,6 @@ package archive
 
 import (
 	"errors"
-	"fmt"
 	"path"
 	"strings"
 )
@@ -29,7 +28,7 @@ func ListArchiveTopLevel(archiveName string) (string, error) {
 	out, err := tarGetContents(archiveName)
 
 	if err != nil {
-		errMsg := fmt.Sprint("An error occurred:", out)
+		errMsg := "An error occurred: " + out
 		return "", errors.New(errMsg)
 	}
 
