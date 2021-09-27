@@ -3,6 +3,7 @@ package archive
 import (
 	"fmt"
 	flag "github.com/spf13/pflag"
+  "os"
 )
 
 var (
@@ -52,6 +53,7 @@ func execAdd() {
 		fmt.Println(*flagAdd, "added to archive as a gzipped file with name", gzippedFileName)
 	} else {
 		fmt.Print(err)
+    os.Exit(1)
 	}
 }
 
@@ -62,6 +64,7 @@ func execAddGzipped() {
 		fmt.Println(*flagAdd, "added to archive")
 	} else {
 		fmt.Print(err)
+    os.Exit(1)
 	}
 }
 
@@ -76,6 +79,7 @@ func execOptionUnarchive() {
 		}
 	} else {
 		fmt.Print(err)
+    os.Exit(1)
 	}
 }
 
@@ -87,6 +91,7 @@ func execOptionList() {
 		fmt.Print(out)
 	} else {
 		fmt.Println(err)
+    os.Exit(1)
 	}
 }
 
@@ -98,6 +103,7 @@ func execOptionTopLevel() {
 		fmt.Print(out)
 	} else {
 		fmt.Println(err)
+    os.Exit(1)
 	}
 }
 
