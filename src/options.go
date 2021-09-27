@@ -35,7 +35,9 @@ func ParseOptions() {
 		execOptionHelp()
 	} else if *flagVersion {
 		execOptionVersion()
-	}
+	} else {
+    execOptionHelp()
+  }
 }
 
 func execOptionAdd() {
