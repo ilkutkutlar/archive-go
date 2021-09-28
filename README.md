@@ -12,7 +12,7 @@ It is essentially a specialised interface to `tar`. Instead of the user having t
 
 ## Usage
 
-Each directory has its own archive file (called `.archive.tar`) that's created when first file is archived. That's where all archived files are stored. Add file to CWD's archive (without removing the file):
+Each directory has its own archive file (called `.archive.tar` by default, can be changed with the `-n` flag) that's created when first file is archived. That's where all archived files are stored. Add file to CWD's archive (without removing the file):
 
 ```sh
 archive -a file.txt
@@ -56,11 +56,18 @@ To list archive contents:
 archive -l
 ```
 
+You can use the `-n` flag with any option to apply it to a custom archive instead of the default ".archive.tar":
+
+```sh
+archive -a file.txt -n ".custom.tar"
+```
+
 ## Options
 
 ```sh
 -a, --add FILE          # Add file to archive of current directory
 -u, --unarchive FILE    # Unarchive file from archive of current directory
+-n, --archive-name      # Use a custom archive name instead of the default .archive.tar (default ".archive.tar")
 -d, --delete            # Pass flag to -a, -u or -z to delete file in dir/archive after operation
 -z, --gzip              # Used with -a to gzip the file/dir before archiving it. Original file is 
                         # not affected (i.e. not gzipped) but will be deleted if -d is passed.
