@@ -8,16 +8,19 @@ import (
 	"path"
 )
 
+// FileExists returns whether given file exists
 func FileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !errors.Is(err, fs.ErrNotExist)
 }
 
+// IsFile returns whether the given file is a regular file
 func IsFile(filePath string) bool {
 	info, _ := os.Stat(filePath)
 	return info.Mode().IsRegular()
 }
 
+// DestroyFileInArchive removes the given file from the given archive contents
 func DestroyFileInArchive(filePath string, archivePath string) error {
 	archiveDir := path.Dir(archivePath)
 
@@ -36,15 +39,16 @@ func DestroyFileInArchive(filePath string, archivePath string) error {
 	return nil
 }
 
+// GzipFileOrDir gzips the given file or directory and returns the gzipped name
 func GzipFileOrDir(filePath string, removeFiles bool) (string, error) {
 	if IsFile(filePath) {
-		return GzipFile(filePath, removeFiles)
-	} else {
-		return GzipDir(filePath, removeFiles)
+		return gzipFile(filePath, removeFiles)
 	}
+
+  return gzipDir(filePath, removeFiles)
 }
 
-func GzipFile(filePath string, removeFiles bool) (string, error) {
+func gzipFile(filePath string, removeFiles bool) (string, error) {
 	fileName := path.Base(filePath)
 	gzippedPath := filePath + ".gz"
 
@@ -59,15 +63,15 @@ func GzipFile(filePath string, removeFiles bool) (string, error) {
 
 	out, err := command.CombinedOutput()
 
-	if err == nil || GzipTest(gzippedPath) {
+	if err == nil || gzipTest(gzippedPath) {
 		return fileName + ".gz", nil
-	} else {
-		errMsg := "Gzip failed:\n" + string(out) + err.Error()
-		return "", errors.New(errMsg)
 	}
+
+  errMsg := "Gzip failed:\n" + string(out) + err.Error()
+  return "", errors.New(errMsg)
 }
 
-func GzipDir(filePath string, removeFiles bool) (string, error) {
+func gzipDir(filePath string, removeFiles bool) (string, error) {
 	fileName := path.Base(filePath)
 	fileDir := path.Dir(filePath)
 	gzippedPath := filePath + ".tar.gz"
@@ -88,15 +92,15 @@ func GzipDir(filePath string, removeFiles bool) (string, error) {
 	command := exec.Command("tar", args...)
 	out, err := command.CombinedOutput()
 
-	if err == nil || GzipTest(gzippedPath) {
+	if err == nil || gzipTest(gzippedPath) {
 		return fileName + ".tar.gz", nil
-	} else {
-		errMsg := "Gzip failed:\n" + string(out) + err.Error()
-		return "", errors.New(errMsg)
 	}
+
+  errMsg := "Gzip failed:\n" + string(out) + err.Error()
+  return "", errors.New(errMsg)
 }
 
-func GzipTest(gzippedPath string) bool {
+func gzipTest(gzippedPath string) bool {
 	_, gzipTestErr := exec.Command("gzip", "--test", gzippedPath).Output()
 	return gzipTestErr == nil
 }

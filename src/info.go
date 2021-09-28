@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// ListArchive returns a new line separated string of all archive contents recursively.
 func ListArchive(archiveName string) (string, error) {
 	if !FileExists(archiveName) {
 		return "", errors.New("No archive file in current directory")
@@ -20,6 +21,7 @@ func ListArchive(archiveName string) (string, error) {
 	return out, nil
 }
 
+// ListArchiveTopLevel returns a new line separated string of archive contents without a parent directory.
 func ListArchiveTopLevel(archiveName string) (string, error) {
 	if !FileExists(archiveName) {
 		return "", errors.New("No archive file in current directory")

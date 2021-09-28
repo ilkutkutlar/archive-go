@@ -6,12 +6,12 @@ import (
 	"os"
 )
 
-const DEFAULT_ARCHIVE_NAME = ".archive.tar"
+const defaultArchiveName = ".archive.tar"
 
 var (
 	flagAdd         = flag.StringP("add", "a", "", "Add file to archive of current directory")
 	flagUnarchive   = flag.StringP("unarchive", "u", "", "Unarchive file from archive of current directory")
-	flagArchiveName = flag.StringP("archive-name", "n", DEFAULT_ARCHIVE_NAME, "Use a custom archive name instead of the default .archive.tar")
+	flagArchiveName = flag.StringP("archive-name", "n", defaultArchiveName, "Use a custom archive name instead of the default .archive.tar")
 	flagGzip        = flag.BoolP("gzip", "z", false, "Used with -a to gzip the file/dir before archiving it. Original file is not affected (i.e. not gzipped) but will be deleted if -d is passed.")
 	flagDelete      = flag.BoolP("delete", "d", false, "Pass flag to -a, -u or -z to delete file in dir/archive after operation")
 	flagList        = flag.BoolP("list", "l", false, "List the files in current directory archive")
@@ -20,6 +20,7 @@ var (
 	flagVersion     = flag.BoolP("version", "v", false, "Print version and exit")
 )
 
+// ParseOptions parses the flags passed and executes the appropriate options.
 func ParseOptions() {
 	flag.CommandLine.SortFlags = false
 	flag.Parse()
@@ -111,9 +112,9 @@ func execOptionTopLevel() {
 }
 
 func execOptionHelp() {
-	printHelp()
+	PrintHelp()
 }
 
 func execOptionVersion() {
-	printVersion()
+	PrintVersion()
 }

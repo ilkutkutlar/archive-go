@@ -5,6 +5,7 @@ import (
 	"path"
 )
 
+// AddToArchive adds the given file into the given archive
 func AddToArchive(filePath string, archiveName string, removeFiles bool) error {
 	if !FileExists(filePath) {
 		return errors.New("No such file: " + filePath)
@@ -20,6 +21,7 @@ func AddToArchive(filePath string, archiveName string, removeFiles bool) error {
 	return nil
 }
 
+// AddToArchiveGzipped adds the gzipped version of the given file into the given archive
 func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) (string, error) {
 	fileDir := path.Dir(filePath)
 
@@ -46,6 +48,7 @@ func AddToArchiveGzipped(filePath string, archiveName string, removeFiles bool) 
 	return gzippedFileName, nil
 }
 
+// Unarchive extracts only the given file from the given archive
 func Unarchive(filePath string, archiveName string, removeFiles bool) error {
 	archiveDir := path.Dir(archiveName)
 

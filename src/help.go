@@ -8,13 +8,15 @@ import (
 	"path"
 )
 
-func printHelp() {
-	printVersion()
+// PrintHelp prints a help text summarising the functions of flags
+func PrintHelp() {
+	PrintVersion()
 	fmt.Println()
 	flag.PrintDefaults()
 }
 
-func printVersion() {
+// PrintVersion prints the version of archive and a small usage text
+func PrintVersion() {
 	programName := path.Base(os.Args[0])
 	versionText := fmt.Sprintf(
 		`v0.0.2 - September 2021

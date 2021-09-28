@@ -11,13 +11,13 @@ func TestAddToArchiveGzipped(t *testing.T) {
 	t.Cleanup(cleanup)
 	createTestFiles(t)
 
-	archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, false)
-	archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, false)
+	archive.AddToArchiveGzipped(testFile1, testArchive, false)
+	archive.AddToArchiveGzipped(testDir1, testArchive, false)
 
 	expected := `test1.txt.gz
 test_dir1.tar.gz`
 
-	assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
+	assertArchiveContentsEqual(t, testArchive, expected)
 	assertFileExists(t, testFile1)
 	assertFileExists(t, testDir1)
 	// The gzipped files are temporary: must be removed after adding.
@@ -29,13 +29,13 @@ func TestAddToArchiveGzippedAndRemove(t *testing.T) {
 	t.Cleanup(cleanup)
 	createTestFiles(t)
 
-	archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, true)
-	archive.AddToArchiveGzipped(testDir1, TEST_ARCHIVE, true)
+	archive.AddToArchiveGzipped(testFile1, testArchive, true)
+	archive.AddToArchiveGzipped(testDir1, testArchive, true)
 
 	expected := `test1.txt.gz
 test_dir1.tar.gz`
 
-	assertArchiveContentsEqual(t, TEST_ARCHIVE, expected)
+	assertArchiveContentsEqual(t, testArchive, expected)
 	assertFileDoesNotExist(t, testFile1)
 	assertFileDoesNotExist(t, testDir1)
 	assertFileDoesNotExist(t, testFile2)
@@ -51,7 +51,7 @@ func TestErrorHandledCorrectlyDuringArchivingGzipped(t *testing.T) {
 	// Remove read permission so adding to archive causes error
 	os.Chmod(testFile1, 200)
 
-	gzippedName, actualErr := archive.AddToArchiveGzipped(testFile1, TEST_ARCHIVE, false)
+	gzippedName, actualErr := archive.AddToArchiveGzipped(testFile1, testArchive, false)
 	/* Unlike with tar, since we are not using the -C option, gzip
 	 * will show the full path of the file, so it won't only say "test.txt" */
 	expectedErr := fmt.Sprintf(`Gzip failed:
@@ -67,5 +67,5 @@ exit status 1`, testFile1)
 	assertFileDoesNotExist(t, testFile1+".gz")
 
 	// Archiving failed - so we expect archive to be empty - i.e. non-existent
-	assertFileDoesNotExist(t, TEST_ARCHIVE)
+	assertFileDoesNotExist(t, testArchive)
 }

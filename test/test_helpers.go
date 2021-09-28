@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	TEST_ARCHIVE    = "test_archive.tar"
-	DUMMY_ARCHIVE_1 = "fixtures/dummy_archive.tar"
-	DUMMY_ARCHIVE_2 = "fixtures/dummy_archive2.tar"
+	testArchive    = "test_archive.tar"
+	dummyArchive1 = "fixtures/dummy_archive.tar"
+	dummyArchive2 = "fixtures/dummy_archive2.tar"
 )
 
 var (
@@ -27,7 +27,7 @@ var (
 )
 
 func cleanup() {
-	os.Remove(TEST_ARCHIVE)
+	os.Remove(testArchive)
 }
 
 func createTestFiles(t *testing.T) {
