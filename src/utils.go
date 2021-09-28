@@ -45,7 +45,7 @@ func GzipFileOrDir(filePath string, removeFiles bool) (string, error) {
 		return gzipFile(filePath, removeFiles)
 	}
 
-  return gzipDir(filePath, removeFiles)
+	return gzipDir(filePath, removeFiles)
 }
 
 func gzipFile(filePath string, removeFiles bool) (string, error) {
@@ -67,8 +67,8 @@ func gzipFile(filePath string, removeFiles bool) (string, error) {
 		return fileName + ".gz", nil
 	}
 
-  errMsg := "Gzip failed:\n" + string(out) + err.Error()
-  return "", errors.New(errMsg)
+	errMsg := "Gzip failed:\n" + string(out) + err.Error()
+	return "", errors.New(errMsg)
 }
 
 func gzipDir(filePath string, removeFiles bool) (string, error) {
@@ -96,8 +96,8 @@ func gzipDir(filePath string, removeFiles bool) (string, error) {
 		return fileName + ".tar.gz", nil
 	}
 
-  errMsg := "Gzip failed:\n" + string(out) + err.Error()
-  return "", errors.New(errMsg)
+	errMsg := "Gzip failed:\n" + string(out) + err.Error()
+	return "", errors.New(errMsg)
 }
 
 func gzipTest(gzippedPath string) bool {

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	testArchive    = "test_archive.tar"
+	testArchive   = "test_archive.tar"
 	dummyArchive1 = "fixtures/dummy_archive.tar"
 	dummyArchive2 = "fixtures/dummy_archive2.tar"
 )

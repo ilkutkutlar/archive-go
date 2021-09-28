@@ -79,8 +79,8 @@ archive -l
 go test ./test
 ```
 
-- [gofmt](https://pkg.go.dev/cmd/gofmt) is used for automatically formatting the code to enforce a level of consistency, as well as simplify it. To run the formatter, run the `format.sh` script in the project root directory:
+- [gofmt](https://pkg.go.dev/cmd/gofmt) is used for automatically formatting the code to enforce a level of consistency, as well as simplify it. `golint` is used for linting. To run the formatter followed by the linter, run the `lint.sh` script in the project root directory:
 
 ```sh
-sh format.sh
+sh lint.sh
 ```
