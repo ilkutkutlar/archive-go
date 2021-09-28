@@ -19,7 +19,7 @@ func PrintHelp() {
 func PrintVersion() {
 	programName := path.Base(os.Args[0])
 	versionText := fmt.Sprintf(
-		`v0.0.2 - September 2021
+		`v0.0.3 - September 2021
 
 Usage: %s {-a|-u} FILE [-d|-z]
        %s {-h|-l|-t|-v}`,
