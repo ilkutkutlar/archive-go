@@ -1,4 +1,4 @@
-module github.com/ilkutkutlar/archive-go
+module github.com/ilkutkutlar/archive
 
 go 1.17
 

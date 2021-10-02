@@ -2,7 +2,7 @@ package archive
 
 import (
 	"fmt"
-	archive "github.com/ilkutkutlar/archive-go/src"
+	archive "github.com/ilkutkutlar/archive/src"
 	"os"
 	"testing"
 )

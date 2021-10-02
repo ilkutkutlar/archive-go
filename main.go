@@ -1,7 +1,7 @@
 package main
 
 import (
-	archive "github.com/ilkutkutlar/archive-go/src"
+	archive "github.com/ilkutkutlar/archive/src"
 )
 
 func main() {
