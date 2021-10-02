@@ -1,3 +1,3 @@
 gofmt -s -w .
 golint src
-golint archive.go
+golint main.go
