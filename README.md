@@ -10,6 +10,24 @@ Email clients and productivity software (e.g. to-do list or note taking applicat
 
 It is essentially a specialised interface to `tar`. Instead of the user having to worry about remembering and typing long tar commands, handling errors, keeping track of tar files, etc. this script abstracts away all that to make archiving as simple as archiving an email with the click of a button: `archive -a file.txt`.
 
+## Installation
+
+Firstly you will need to install `go` (more info [here](https://golang.org/doc/install))
+
+Then you can use `go install` to install the `archive-go` binary into your `$GOBIN` (which defaults to `$HOME/go/bin` if not set):
+
+```sh
+go install github.com/ilkutkutlar/archive-go@latest
+```
+
+Once installed, make sure your `$GOBIN` is included in your `$PATH`.
+
+Next, consider aliasing `archive-go` to `archive` in your shell's `rc` file for convenience:
+
+```sh
+echo "alias archive='archive-go'" >> ~/.zshrc
+```
+
 ## Usage
 
 Each directory has its own archive file (called `.archive.tar` by default, can be changed with the `-n` flag) that's created when first file is archived. That's where all archived files are stored. Add file to CWD's archive (without removing the file):
