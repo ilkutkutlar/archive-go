@@ -14,18 +14,24 @@ It is essentially a specialised interface to `tar`. Instead of the user having t
 
 Firstly you will need to install `go` (more info [here](https://golang.org/doc/install))
 
-Then you can use `go install` to install the `archive-go` binary into your `$GOBIN` (which defaults to `$HOME/go/bin` if not set):
+Then you can use `go install` to install the `archive-go` binary into your `$GOBIN` directory (which defaults to the `$HOME/go/bin` directory if not set):
 
 ```sh
 go install github.com/ilkutkutlar/archive-go@latest
 ```
 
-Once installed, make sure your `$GOBIN` is included in your `$PATH`.
+Once installed, make sure your `$GOBIN` directory is included in your `$PATH`.
 
 Next, consider aliasing `archive-go` to `archive` in your shell's `rc` file for convenience:
 
 ```sh
+# For Bash
+echo "alias archive='archive-go'" >> ~/.bashrc
+
+# For Zsh
 echo "alias archive='archive-go'" >> ~/.zshrc
+
+# etc.
 ```
 
 ## Usage
